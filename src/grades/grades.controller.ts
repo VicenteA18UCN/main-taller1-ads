@@ -12,7 +12,7 @@ export class GradesController {
     summary: 'Assign grades to students',
   })
   @Post('assign')
-  create(@Body() assignCreateDto: AssignGradeDto) {
+  assign(@Body() assignCreateDto: AssignGradeDto) {
     return this.gradesService.assign(assignCreateDto);
   }
 }
