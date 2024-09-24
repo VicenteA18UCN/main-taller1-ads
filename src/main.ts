@@ -5,13 +5,14 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  await app.listen(3000);
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
-      forbidNonWhitelisted: true,
     }),
   );
+
+  app.setGlobalPrefix('api');
+
   const config = new DocumentBuilder()
     .setTitle('Main APP | Taller 1 Arquitectura de Sistemas')
     .setDescription('API para el taller 1 del ramo Arquitectura de Sistemas')
@@ -26,5 +27,7 @@ async function bootstrap() {
       operationsSorter: 'alpha',
     },
   });
+
+  await app.listen(3000);
 }
 bootstrap();
