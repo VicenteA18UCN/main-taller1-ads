@@ -3,6 +3,7 @@ import { UsersModule } from './users/users.module';
 import { GradesModule } from './grades/grades.module';
 import { SearchModule } from './search/search.module';
 import { ConfigModule } from '@nestjs/config';
+import { RestrictionsModule } from './restrictions/restrictions.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { ConfigModule } from '@nestjs/config';
     UsersModule,
     GradesModule,
     SearchModule,
+    RestrictionsModule,
   ],
   controllers: [],
   providers: [],
