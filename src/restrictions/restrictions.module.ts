@@ -7,5 +7,6 @@ import { HttpModule } from '@nestjs/axios';
   imports: [HttpModule],
   controllers: [RestrictionsController],
   providers: [RestrictionsService],
+  exports: [RestrictionsService],
 })
 export class RestrictionsModule {}

@@ -13,7 +13,7 @@ export class RestrictionsService {
     private readonly configService: ConfigService,
   ) {
     this.restrictionServiceUrl = this.configService.get<string>(
-      'URL_RESTRICTION_SERVICE',
+      'URL_RESTRICTIONS_SERVICE',
     );
   }
 
@@ -24,6 +24,16 @@ export class RestrictionsService {
 
     const response = await this.httpService
       .post(url, { description })
+      .pipe(map((response) => response.data));
+
+    return response;
+  }
+
+  public async checkRestriction(studentUuid: string) {
+    const url = `${this.restrictionServiceUrl}/restrictions-service/${studentUuid}/check-restrictions`;
+
+    const response = await this.httpService
+      .get(url)
       .pipe(map((response) => response.data));
 
     return response;
