@@ -16,6 +16,5 @@ import { RestrictionsModule } from './restrictions/restrictions.module';
     RestrictionsModule,
   ],
   controllers: [],
-  providers: [],
 })
 export class AppModule {}
