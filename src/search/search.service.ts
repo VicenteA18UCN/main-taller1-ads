@@ -16,16 +16,16 @@ export class SearchService {
 
   // Función para obtener y procesar las calificaciones de los estudiantes
   async getStudentsGrades() {
-    const excelencia = await this.fetchGrades(6.0, 7.0);
-    const bueno = await this.fetchGrades(5.0, 6.0);
+    const excelent = await this.fetchGrades(6.0, 7.0);
+    const good = await this.fetchGrades(5.0, 6.0);
     const aceptable = await this.fetchGrades(4.0, 5.0);
-    const noEsperado = await this.fetchGrades(1.0, 4.0);
+    const notExpected = await this.fetchGrades(1.0, 4.0);
 
     return {
-      excelencia,
-      bueno,
-      aceptable,
-      noEsperado,
+      excelencia: excelent,
+      bueno: good,
+      aceptable: aceptable,
+      noEsperado: notExpected,
     };
   }
 
