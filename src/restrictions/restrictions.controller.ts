@@ -1,7 +1,8 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import { RestrictionsService } from './restrictions.service';
-import { AssignRestrictionDto } from './dto/assign-restriction.dto';
+
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { AssignRestrictionDto } from './dto/assign-restriction.dto';
 
 @ApiTags('restrictions')
 @Controller('restrictions')

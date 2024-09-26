@@ -1,8 +1,12 @@
-import { IsString, IsUUID } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { CreateRestrictionDto } from './create-restriction.dto';
+import { IsArray, ValidateNested } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class AssignRestrictionDto {
-  @IsUUID()
-  studentUuid: string;
-  @IsString()
-  description: string;
+  @ApiProperty({ type: [CreateRestrictionDto] })
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateRestrictionDto)
+  restrictions: CreateRestrictionDto[];
 }

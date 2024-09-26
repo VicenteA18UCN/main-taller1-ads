@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { AssignGradeDto } from './dto/assign-grade.dto';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
-import { RestrictionsService } from '../restrictions/restrictions.service';
+import { CommonService } from 'src/common/common.service';
 
 @Injectable()
 export class GradesService {
@@ -12,7 +12,7 @@ export class GradesService {
   constructor(
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
-    private readonly restrictionsService: RestrictionsService,
+    private readonly commonService: CommonService,
   ) {
     this.baseUrl = this.configService.get<string>('URL_GRADES_SERVICE');
   }
@@ -20,8 +20,6 @@ export class GradesService {
   assign(assignGradeDto: AssignGradeDto) {
     console.log(assignGradeDto);
 
-    return this.restrictionsService.checkRestriction(
-      assignGradeDto.studentUuid,
-    );
+    return this.commonService.checkRestriction(assignGradeDto.studentUuid);
   }
 }

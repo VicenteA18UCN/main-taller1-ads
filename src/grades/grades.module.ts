@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 import { GradesService } from './grades.service';
 import { GradesController } from './grades.controller';
-import { RestrictionsModule } from 'src/restrictions/restrictions.module';
 import { HttpModule } from '@nestjs/axios';
+import { CommonModule } from 'src/common/common.module';
 
 @Module({
   controllers: [GradesController],
   providers: [GradesService],
-  imports: [RestrictionsModule, HttpModule],
+  imports: [HttpModule, CommonModule],
 })
 export class GradesModule {}
