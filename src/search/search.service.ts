@@ -39,7 +39,7 @@ export class SearchService {
   }
 
   public async getStudentsByRestrictionId(restrictionId: string) {
-    const url = `${this.baseUrl}/restrictions`;
+    const url = `${this.baseUrl}/restrictions/students`;
     const queryParams = `?search=${restrictionId}`;
 
     try {
