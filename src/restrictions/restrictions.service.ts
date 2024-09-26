@@ -5,6 +5,7 @@ import { AssignRestrictionDto } from './dto/assign-restriction.dto';
 import { lastValueFrom } from 'rxjs';
 import { CommonService } from 'src/common/common.service';
 import { AxiosError } from 'axios';
+import { SearchService } from 'src/search/search.service';
 
 @Injectable()
 export class RestrictionsService {
@@ -15,6 +16,7 @@ export class RestrictionsService {
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
     private readonly commonService: CommonService,
+    private readonly searchService: SearchService,
   ) {
     this.baseUrl = this.configService.get<string>('URL_RESTRICTIONS_SERVICE');
   }
@@ -40,6 +42,11 @@ export class RestrictionsService {
         const response = await lastValueFrom(
           this.httpService.post(url, { description }),
         );
+        const responseSearch = await this.searchService.createRestrictions(
+          response.data.restriction.id,
+          description,
+        );
+        this.logger.log(responseSearch);
         return {
           studentUuid,
           success: true,
@@ -61,5 +68,9 @@ export class RestrictionsService {
     const results = await Promise.all(promises);
 
     return results;
+  }
+
+  async remove(assignRestrictionDto: AssignRestrictionDto) {
+    console.log(assignRestrictionDto);
   }
 }

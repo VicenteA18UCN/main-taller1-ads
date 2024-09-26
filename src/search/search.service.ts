@@ -38,6 +38,31 @@ export class SearchService {
     }
   }
 
+  public async createRestrictions(id: string, restrictionReason: string) {
+    const url = `${this.baseUrl}/restrictions`;
+    const body = {
+      _id: id,
+      uuid: id,
+      restrictionReason: restrictionReason,
+    };
+
+    try {
+      const response = await lastValueFrom(this.httpService.post(url, body));
+      return response.data;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        this.logger.error('Error in HTTP response:', {
+          status: error.response?.status,
+          data: error.response?.data,
+          message: error.message,
+        });
+      } else {
+        this.logger.error('Unexpected error:', error);
+      }
+      return null;
+    }
+  }
+
   // Función para obtener y procesar las calificaciones de los estudiantes
   async getStudentsGrades() {
     const excelent = await this.fetchGrades(6.0, 7.0);
