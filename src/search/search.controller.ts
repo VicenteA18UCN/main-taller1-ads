@@ -1,8 +1,8 @@
 import { Controller, Get } from '@nestjs/common';
 import { SearchService } from './search.service';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Auth } from 'src/users/decorators/auth.decorator';
-import { ValidRoles } from 'src/users/interfaces';
+import { Auth } from 'src/auth/decorators/auth.decorator';
+import { ValidRoles } from 'src/auth/interfaces';
 
 @ApiTags('search')
 @ApiBearerAuth()

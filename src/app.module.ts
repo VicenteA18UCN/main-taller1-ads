@@ -4,6 +4,7 @@ import { GradesModule } from './grades/grades.module';
 import { SearchModule } from './search/search.module';
 import { ConfigModule } from '@nestjs/config';
 import { RestrictionsModule } from './restrictions/restrictions.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { RestrictionsModule } from './restrictions/restrictions.module';
     GradesModule,
     SearchModule,
     RestrictionsModule,
+    AuthModule,
   ],
   controllers: [],
 })

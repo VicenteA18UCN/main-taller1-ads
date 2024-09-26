@@ -1,10 +1,10 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { LoginBodyDto } from './dto/login/login-body.dto';
+import { ConflictException, Injectable, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { AxiosError } from 'axios';
 import { lastValueFrom } from 'rxjs';
-import { JwtService, JwtSignOptions } from '@nestjs/jwt';
+import { CreateStudentDto } from './dto/student/create-student.dto';
+import { SearchService } from '../search/search.service';
 
 @Injectable()
 export class UsersService {
@@ -14,21 +14,24 @@ export class UsersService {
   constructor(
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
-    private readonly jwtService: JwtService,
+    private readonly searchService: SearchService,
   ) {
     this.baseUrl = this.configService.get<string>('URL_USERS_SERVICE');
   }
 
-  async login(loginBodyDto: LoginBodyDto) {
-    this.logger.log(loginBodyDto);
-    const url = `${this.baseUrl}/user/login`;
+  async createStudent(createStudentDto: CreateStudentDto) {
+    const url = `${this.baseUrl}/user/createStudent`;
 
     try {
       const response = await lastValueFrom(
-        this.httpService.post(url, loginBodyDto),
+        this.httpService.post(url, createStudentDto),
       );
-      const jwt = this.signToken(response.data);
-      return { token: jwt };
+      const student = await this.searchService.createStudents(
+        createStudentDto,
+        response.data.id,
+      );
+
+      return student;
     } catch (error) {
       if (error instanceof AxiosError) {
         this.logger.error('Error response:', {
@@ -36,15 +39,13 @@ export class UsersService {
           data: error.response?.data,
           message: error.message,
         });
+        if (error.response?.status === 400) {
+          throw new ConflictException('Student already exists');
+        }
       } else {
         this.logger.error('Unexpected error:', error);
       }
       return [];
     }
-  }
-
-  private signToken(payload: LoginBodyDto, options?: JwtSignOptions) {
-    const token = this.jwtService.sign(payload, options);
-    return token;
   }
 }

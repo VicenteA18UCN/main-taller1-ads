@@ -1,17 +1,41 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { lastValueFrom } from 'rxjs';
+import { AxiosError } from 'axios';
+import { CreateStudentDto } from 'src/users/dto/student/create-student.dto';
 
 @Injectable()
 export class SearchService {
   private baseUrl: string;
+  private logger: Logger = new Logger(SearchService.name);
 
   constructor(
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
   ) {
     this.baseUrl = this.configService.get<string>('URL_SEARCH_SERVICE');
+  }
+
+  public async createStudents(createStudentDto: CreateStudentDto, id: string) {
+    const url = `${this.baseUrl}/students`;
+    const body = { ...createStudentDto, _id: id, uuid: id };
+
+    try {
+      const response = await lastValueFrom(this.httpService.post(url, body));
+      return response.data;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        this.logger.error('Error in HTTP response:', {
+          status: error.response?.status,
+          data: error.response?.data,
+          message: error.message,
+        });
+      } else {
+        this.logger.error('Unexpected error:', error);
+      }
+      return null;
+    }
   }
 
   // Función para obtener y procesar las calificaciones de los estudiantes

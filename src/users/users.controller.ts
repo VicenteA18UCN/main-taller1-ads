@@ -1,18 +1,22 @@
 import { Controller, Post, Body } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { LoginBodyDto } from './dto/login/login-body.dto';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { CreateStudentDto } from './dto/student/create-student.dto';
+import { Auth } from 'src/auth/decorators/auth.decorator';
+import { ValidRoles } from 'src/auth/interfaces';
 
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @Auth(ValidRoles.Admin)
   @ApiOperation({
-    summary: 'Login a user',
+    summary: 'Create a student',
   })
-  @Post('login')
-  login(@Body() loginBodyDto: LoginBodyDto) {
-    return this.usersService.login(loginBodyDto);
+  @ApiBearerAuth()
+  @Post('students')
+  createStudent(@Body() createStudentDto: CreateStudentDto) {
+    return this.usersService.createStudent(createStudentDto);
   }
 }

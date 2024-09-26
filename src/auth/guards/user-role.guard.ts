@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { META_ROLES } from '../decorators/role-protected.decorator';
-import { LoginResponseDto } from '../dto/login/login-response.dto';
+import { LoginResponseDto } from '../dto/login-response.dto';
 
 @Injectable()
 export class UserRoleGuard implements CanActivate {
@@ -26,6 +26,7 @@ export class UserRoleGuard implements CanActivate {
     if (validRoles.length === 0) return true;
 
     const req = context.switchToHttp().getRequest();
+
     const user = req.user as LoginResponseDto;
 
     if (!user) throw new BadRequestException('User not found');
