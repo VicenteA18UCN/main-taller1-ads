@@ -5,6 +5,7 @@ import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AssignRestrictionDto } from './dto/assign-restriction.dto';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { ValidRoles } from 'src/auth/interfaces';
+import { RemoveRestrictionDto } from './dto/remove-restriction.dto';
 
 @ApiTags('restrictions')
 @Controller('restrictions')
@@ -17,15 +18,15 @@ export class RestrictionsController {
     summary: 'Assign a restriction',
   })
   @Post('assign')
-  assign(@Body() assignRestrictDto: AssignRestrictionDto) {
-    return this.restrictionsService.assign(assignRestrictDto);
+  assign(@Body() assignRestrictionDto: AssignRestrictionDto) {
+    return this.restrictionsService.assign(assignRestrictionDto);
   }
 
   @ApiOperation({
     summary: 'Remove a restriction',
   })
   @Post('remove')
-  remove(@Body() assignRestrictDto: AssignRestrictionDto) {
-    return this.restrictionsService.remove(assignRestrictDto);
+  remove(@Body() removeRestrictionDto: RemoveRestrictionDto) {
+    return this.restrictionsService.remove(removeRestrictionDto);
   }
 }

@@ -6,6 +6,7 @@ import { lastValueFrom } from 'rxjs';
 import { CommonService } from 'src/common/common.service';
 import { AxiosError } from 'axios';
 import { SearchService } from 'src/search/search.service';
+import { RemoveRestrictionDto } from './dto/remove-restriction.dto';
 
 @Injectable()
 export class RestrictionsService {
@@ -42,11 +43,19 @@ export class RestrictionsService {
         const response = await lastValueFrom(
           this.httpService.post(url, { description }),
         );
-        const responseSearch = await this.searchService.createRestrictions(
+        const responseSearchRes = await this.searchService.createRestrictions(
           response.data.restriction.id,
           description,
         );
-        this.logger.log(responseSearch);
+
+        const responseResToStudent =
+          await this.searchService.addRestrictionToStudent(
+            studentUuid,
+            response.data.restriction.id,
+          );
+
+        this.logger.log(responseSearchRes);
+        this.logger.log(responseResToStudent);
         return {
           studentUuid,
           success: true,
@@ -70,7 +79,13 @@ export class RestrictionsService {
     return results;
   }
 
-  async remove(assignRestrictionDto: AssignRestrictionDto) {
-    console.log(assignRestrictionDto);
+  async remove(removeRestrictionDto: RemoveRestrictionDto) {
+    console.log(removeRestrictionDto);
+    const students = await this.searchService.getStudentsByRestrictionId(
+      removeRestrictionDto.restrictionId,
+    );
+
+    console.log(students);
+    return;
   }
 }
