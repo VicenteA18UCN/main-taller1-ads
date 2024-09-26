@@ -40,9 +40,8 @@ export class CommonService {
     }
   }
 
-  public async checkStudent(studentUuid: string) {
+  public async checkStudent(studentUuid: string): Promise<boolean> {
     const url = `${this.usersUrl}/user/CheckStudent/${studentUuid}`;
-
     try {
       const response = await lastValueFrom(this.httpService.get(url));
       return response.data;

@@ -25,10 +25,13 @@ export class RestrictionsService {
 
     const promises = restrictions.map(async (restriction) => {
       const { studentUuid, description } = restriction;
-      if (!this.commonService.checkStudent(studentUuid)) {
-        throw new NotFoundException(
-          `Student with uuid ${studentUuid} not found`,
-        );
+      const isStudent = await this.commonService.checkStudent(studentUuid);
+      if (!isStudent) {
+        return {
+          studentUuid,
+          success: false,
+          data: new NotFoundException('Student not found'),
+        };
       }
 
       const url = `${this.baseUrl}/restrictions-service/${studentUuid}/add`;
