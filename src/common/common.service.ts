@@ -25,7 +25,7 @@ export class CommonService {
 
     try {
       const response = await lastValueFrom(this.httpService.get(url));
-      return response.data;
+      return response.data.hasRestrictions;
     } catch (error) {
       if (error instanceof AxiosError) {
         this.logger.error('Error in HTTP response:', {
