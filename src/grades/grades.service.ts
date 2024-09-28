@@ -5,6 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { CommonService } from 'src/common/common.service';
 import { lastValueFrom } from 'rxjs';
 import { AxiosError } from 'axios';
+import { SearchService } from 'src/search/search.service';
 
 @Injectable()
 export class GradesService {
@@ -15,6 +16,7 @@ export class GradesService {
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
     private readonly commonService: CommonService,
+    private readonly searchService: SearchService,
   ) {
     this.baseUrl = this.configService.get<string>('URL_GRADES_SERVICE');
   }
@@ -33,13 +35,16 @@ export class GradesService {
     this.logger.log(`isRestricted: ${isRestricted}`);
     this.logger.log(`isStudent: ${isStudent}`);
 
-    if (!isRestricted || !isStudent) {
-      return false;
+    if (isRestricted || !isStudent) {
+      return {
+        success: false,
+        data: 'Student not found or is restricted',
+      };
     }
 
     const url = `${this.baseUrl}/grade/assignGrade`;
 
-    assignGradeDto.grades.map(async (grade) => {
+    const grades = assignGradeDto.grades.map(async (grade) => {
       const body = {
         studentUuid: assignGradeDto.studentUuid,
         ...grade,
@@ -47,7 +52,16 @@ export class GradesService {
       this.logger.log(body);
       try {
         const response = await lastValueFrom(this.httpService.post(url, body));
-        this.logger.log(response.data);
+        const gradeId = response.data;
+        this.logger.log(gradeId);
+
+        const responseSearch = await this.searchService.createGrade(
+          assignGradeDto.studentUuid,
+          gradeId,
+          grade,
+        );
+
+        this.logger.log(responseSearch);
         return response.data;
       } catch (error) {
         if (error instanceof AxiosError) {
@@ -56,11 +70,19 @@ export class GradesService {
             data: error.response?.data,
             message: error.message,
           });
+
+          return {
+            success: false,
+            data: error.response?.data,
+          };
         } else {
           this.logger.error('Unexpected error:', error);
         }
         return [];
       }
     });
+
+    const results = await Promise.all(grades);
+    return results;
   }
 }

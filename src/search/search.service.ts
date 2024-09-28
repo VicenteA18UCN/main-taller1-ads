@@ -4,6 +4,7 @@ import { ConfigService } from '@nestjs/config';
 import { lastValueFrom } from 'rxjs';
 import { AxiosError } from 'axios';
 import { CreateStudentDto } from 'src/users/dto/student/create-student.dto';
+import { CreateGradeDto } from '../grades/dto/create-grade.dto';
 
 @Injectable()
 export class SearchService {
@@ -92,7 +93,6 @@ export class SearchService {
 
     try {
       const response = await lastValueFrom(this.httpService.delete(url));
-      this.logger.log(response.data);
       return response.data;
     } catch (error) {
       if (error instanceof AxiosError) {
@@ -121,6 +121,47 @@ export class SearchService {
         studentUuid,
         success: true,
         data: response.data.data,
+      };
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        this.logger.error('Error in HTTP response:', {
+          status: error.response?.status,
+          data: error.response?.data,
+          message: error.message,
+        });
+        return {
+          studentUuid,
+          success: false,
+          data: error.response?.data,
+        };
+      } else {
+        this.logger.error('Unexpected error:', error);
+      }
+      return null;
+    }
+  }
+
+  public async createGrade(
+    studentUuid: string,
+    gradeUuid: string,
+    createGradeDto: CreateGradeDto,
+  ) {
+    const url = `${this.baseUrl}/grades`;
+    const body = {
+      _id: gradeUuid,
+      name: createGradeDto.gradeName,
+      value: createGradeDto.gradeValue,
+      subjectName: createGradeDto.subjectName,
+      comment: createGradeDto.comment,
+      student: studentUuid,
+    };
+
+    try {
+      const response = await lastValueFrom(this.httpService.post(url, body));
+      return {
+        studentUuid,
+        success: true,
+        data: response.data,
       };
     } catch (error) {
       if (error instanceof AxiosError) {

@@ -48,8 +48,6 @@ export class RestrictionsService {
           response.data.restriction.id,
           description,
         );
-
-        this.logger.log(responseSearchRes);
         const responseResToStudent =
           await this.searchService.addRestrictionToStudent(
             studentUuid,
