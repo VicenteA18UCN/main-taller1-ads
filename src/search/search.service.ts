@@ -63,7 +63,11 @@ export class SearchService {
 
     try {
       const response = await lastValueFrom(this.httpService.post(url, body));
-      return response.data;
+      return {
+        id,
+        success: true,
+        data: response.data,
+      };
     } catch (error) {
       if (error instanceof AxiosError) {
         this.logger.error('Error in HTTP response:', {
@@ -71,6 +75,11 @@ export class SearchService {
           data: error.response?.data,
           message: error.message,
         });
+        return {
+          id,
+          success: false,
+          data: error.response?.data,
+        };
       } else {
         this.logger.error('Unexpected error:', error);
       }
@@ -108,7 +117,11 @@ export class SearchService {
 
     try {
       const response = await lastValueFrom(this.httpService.patch(url, body));
-      return response.data;
+      return {
+        studentUuid,
+        success: true,
+        data: response.data.data,
+      };
     } catch (error) {
       if (error instanceof AxiosError) {
         this.logger.error('Error in HTTP response:', {
@@ -116,6 +129,11 @@ export class SearchService {
           data: error.response?.data,
           message: error.message,
         });
+        return {
+          studentUuid,
+          success: false,
+          data: error.response?.data,
+        };
       } else {
         this.logger.error('Unexpected error:', error);
       }

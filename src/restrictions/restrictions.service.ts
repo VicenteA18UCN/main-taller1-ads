@@ -43,22 +43,31 @@ export class RestrictionsService {
         const response = await lastValueFrom(
           this.httpService.post(url, { description }),
         );
+
         const responseSearchRes = await this.searchService.createRestrictions(
           response.data.restriction.id,
           description,
         );
+
+        this.logger.log(responseSearchRes);
         const responseResToStudent =
           await this.searchService.addRestrictionToStudent(
             studentUuid,
-            responseSearchRes.data.uuid,
+            responseSearchRes.id,
           );
 
-        this.logger.log(responseResToStudent);
-        return {
-          studentUuid,
-          success: true,
-          data: response.data,
-        };
+        if (responseSearchRes.success && responseResToStudent.success) {
+          return {
+            studentUuid,
+            success: true,
+            data: response.data,
+          };
+        } else {
+          return {
+            studentUuid,
+            success: false,
+          };
+        }
       } catch (error) {
         if (error instanceof AxiosError) {
           this.logger.error('Error in HTTP response:', {
@@ -100,7 +109,11 @@ export class RestrictionsService {
           this.httpService.delete(url, { data: {} }),
         );
 
-        return { success: true, data: response.data };
+        return {
+          success: true,
+          ...response.data,
+          restrictionId: student.restriction._id,
+        };
       } catch (error) {
         if (error instanceof AxiosError) {
           this.logger.error('Error in HTTP response:', {
