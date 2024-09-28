@@ -12,8 +12,8 @@ import { RemoveRestrictionDto } from './dto/remove-restriction.dto';
 export class RestrictionsController {
   constructor(private readonly restrictionsService: RestrictionsService) {}
 
-  // @Auth(ValidRoles.Admin)
-  // @ApiBearerAuth()
+  @Auth(ValidRoles.Admin)
+  @ApiBearerAuth()
   @ApiOperation({
     summary: 'Assign a restriction',
   })
@@ -22,6 +22,8 @@ export class RestrictionsController {
     return this.restrictionsService.assign(assignRestrictionDto);
   }
 
+  @Auth(ValidRoles.Admin)
+  @ApiBearerAuth()
   @ApiOperation({
     summary: 'Remove a restriction',
   })
