@@ -1,6 +1,11 @@
 import { Controller, Get } from '@nestjs/common';
 import { SearchService } from './search.service';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { ValidRoles } from 'src/auth/interfaces';
 
@@ -10,6 +15,9 @@ import { ValidRoles } from 'src/auth/interfaces';
 export class SearchController {
   constructor(private readonly searchService: SearchService) {}
 
+  @ApiOkResponse({
+    description: 'Students grades fetched successfully',
+  })
   @Auth(ValidRoles.Admin, ValidRoles.User)
   @ApiOperation({
     summary: 'Get students grades',

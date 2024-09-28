@@ -87,8 +87,6 @@ export class RestrictionsService {
       removeRestrictionDto.param,
     );
 
-    this.logger.log(students);
-
     const uniqueRestrictionsIds = [];
 
     const promises = students.map(async (student) => {
@@ -97,14 +95,12 @@ export class RestrictionsService {
       if (!uniqueRestrictionsIds.includes(student.restriction._id)) {
         uniqueRestrictionsIds.push(student.restriction._id);
       }
-      this.logger.log(url);
       try {
         const response = await lastValueFrom(
           this.httpService.delete(url, { data: {} }),
         );
-        this.logger.log(response.data);
 
-        return response.data;
+        return { success: true, data: response.data };
       } catch (error) {
         if (error instanceof AxiosError) {
           this.logger.error('Error in HTTP response:', {
