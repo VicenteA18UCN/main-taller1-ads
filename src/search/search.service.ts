@@ -185,9 +185,9 @@ export class SearchService {
   // Función para obtener y procesar las calificaciones de los estudiantes
   async getStudentsGrades() {
     const excelent = await this.fetchGrades(6.0, 7.0);
-    const good = await this.fetchGrades(5.0, 5.9);
-    const aceptable = await this.fetchGrades(4.0, 4.9);
-    const notExpected = await this.fetchGrades(1.0, 3.9);
+    const good = await this.fetchGrades(5.0, 5.99);
+    const aceptable = await this.fetchGrades(4.0, 4.99);
+    const notExpected = await this.fetchGrades(1.0, 3.99);
 
     return {
       excelencia: excelent,
