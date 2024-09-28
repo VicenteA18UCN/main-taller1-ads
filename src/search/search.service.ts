@@ -38,15 +38,15 @@ export class SearchService {
     }
   }
 
-  public async getStudentsByRestrictionId(restrictionId: string) {
+  public async getStudentsByRestrictionId(param: string) {
     const url = `${this.baseUrl}/restrictions/students`;
-    const queryParams = `?search=${restrictionId}`;
+    const queryParams = `?search=${param}`;
 
     try {
       const response = await lastValueFrom(
         this.httpService.get(`${url}${queryParams}`),
       );
-      return response.data;
+      return response.data.data;
     } catch (error) {
       console.error('Error fetching students by restriction id:', error);
       return [];
@@ -63,6 +63,27 @@ export class SearchService {
 
     try {
       const response = await lastValueFrom(this.httpService.post(url, body));
+      return response.data;
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        this.logger.error('Error in HTTP response:', {
+          status: error.response?.status,
+          data: error.response?.data,
+          message: error.message,
+        });
+      } else {
+        this.logger.error('Unexpected error:', error);
+      }
+      return null;
+    }
+  }
+
+  public async removeRestricionFromAllStudents(restrictionUuid: string) {
+    const url = `${this.baseUrl}/students/restrictions/${restrictionUuid}`;
+
+    try {
+      const response = await lastValueFrom(this.httpService.delete(url));
+      this.logger.log(response.data);
       return response.data;
     } catch (error) {
       if (error instanceof AxiosError) {

@@ -66,6 +66,11 @@ export class RestrictionsService {
             data: error.response?.data,
             message: error.message,
           });
+          return {
+            studentUuid,
+            success: false,
+            data: error.response?.data,
+          };
         } else {
           this.logger.error('Unexpected error:', error);
         }
@@ -78,12 +83,59 @@ export class RestrictionsService {
   }
 
   async remove(removeRestrictionDto: RemoveRestrictionDto) {
-    console.log(removeRestrictionDto);
     const students = await this.searchService.getStudentsByRestrictionId(
-      removeRestrictionDto.restrictionId,
+      removeRestrictionDto.param,
     );
 
-    console.log(students);
-    return;
+    this.logger.log(students);
+
+    const uniqueRestrictionsIds = [];
+
+    const promises = students.map(async (student) => {
+      const url = `${this.baseUrl}/restrictions-service/${student.studentId}/restrictions/${student.restriction._id}`;
+
+      if (!uniqueRestrictionsIds.includes(student.restriction._id)) {
+        uniqueRestrictionsIds.push(student.restriction._id);
+      }
+      this.logger.log(url);
+      try {
+        const response = await lastValueFrom(
+          this.httpService.delete(url, { data: {} }),
+        );
+        this.logger.log(response.data);
+
+        return response.data;
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          this.logger.error('Error in HTTP response:', {
+            status: error.response?.status,
+            data: error.response?.data,
+            message: error.message,
+          });
+          return {
+            studentUuid: student.studentId,
+            success: false,
+            data: error.response,
+          };
+        } else {
+          this.logger.error('Unexpected error:', error);
+        }
+      }
+    });
+
+    await Promise.all(
+      uniqueRestrictionsIds.map(async (restrictionId) => {
+        const responseSearch =
+          await this.searchService.removeRestricionFromAllStudents(
+            restrictionId,
+          );
+
+        return responseSearch;
+      }),
+    );
+
+    const results = await Promise.all(promises);
+
+    return results;
   }
 }

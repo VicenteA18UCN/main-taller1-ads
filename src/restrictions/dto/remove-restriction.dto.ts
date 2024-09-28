@@ -1,3 +1,6 @@
+import { IsString } from 'class-validator';
+
 export class RemoveRestrictionDto {
-  restrictionId: string;
+  @IsString()
+  param: string;
 }
