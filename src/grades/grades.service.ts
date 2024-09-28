@@ -62,7 +62,13 @@ export class GradesService {
         );
 
         this.logger.log(responseSearch);
-        return response.data;
+        return {
+          success: true,
+          data: {
+            gradeId,
+            ...grade,
+          },
+        };
       } catch (error) {
         if (error instanceof AxiosError) {
           this.logger.error('Error response:', {
