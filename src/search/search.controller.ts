@@ -18,7 +18,7 @@ export class SearchController {
   @ApiOkResponse({
     description: 'Students grades fetched successfully',
   })
-  @Auth(ValidRoles.Admin, ValidRoles.User)
+  @Auth(ValidRoles.Admin, ValidRoles.Docente)
   @ApiOperation({
     summary: 'Get students grades',
   })

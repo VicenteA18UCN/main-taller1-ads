@@ -15,7 +15,7 @@ import { ValidRoles } from 'src/auth/interfaces';
 export class GradesController {
   constructor(private readonly gradesService: GradesService) {}
 
-  @Auth(ValidRoles.Admin, ValidRoles.User)
+  @Auth(ValidRoles.Admin, ValidRoles.Docente)
   @ApiBearerAuth()
   @ApiCreatedResponse({
     description: 'Assign grades to students',
